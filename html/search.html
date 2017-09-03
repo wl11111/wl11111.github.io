@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>搜索-网易云阅读</title>
+		<link rel="icon" href="../image/favicon.ico"  type="image/x-icon" />
+		<link rel="stylesheet" type="text/css" href="../css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/search.css"/>
+		<script>
+			var iScale=1/window.devicePixelRatio;
+			document.write('<meta name="viewport" content="width=device-width,initial-scale='+iScale+',minimum-scale='+iScale+',maximum-scale='+iScale+',user-scalable=no"/>')
+			var iWidth=document.documentElement.clientWidth;
+			document.getElementsByTagName('html')[0].style.fontSize=iWidth/32+ 'px';
+		</script>
+	</head>
+	<body>
+	<section class="g-wrap">
+		<header class="j-fixedbar">
+			<a class="back" href="javascript:;"></a>
+			<div class="m-search-bottom">
+				<div class="search-input">
+					<input type="search" id="search-input-bottom" autocomplete="off" placeholder="大汉光武" />
+					<button class="btn2">搜索</button>
+				</div>
+				<!--搜索提示-->
+				<ul class="search-tips">
+					<!--<li class="tips-f">好多大</li>-->
+				</ul>
+			</div>
+			<a class="home" href="../index.html">首页</a>
+		</header>
+	</section>
+	<!--大家都在搜-->
+	<section class="m-search-key">
+		<dl class="m-hotkey">
+			<dt>大家都在搜</dt>
+			<dd class="search-p">
+				<a href="javascript:;"><em></em>心里罪</a>
+				<a href="javascript:;"><em></em>三生三世十里桃花</a>
+				<a href="javascript:;"><em></em>建军大业</a>
+				<a href="javascript:;"><em></em>名丽场</a>
+				<a href="javascript:;"><em></em>罪恶调查局</a>
+				<a href="javascript:;"><em></em>北京，北京</a>
+				<a href="javascript:;"><em></em>春风十里不如你</a>
+				<a href="javascript:;"><em></em>悟空传</a>
+				<a href="javascript:;"><em></em>守夜者</a>
+				<a href="javascript:;"><em></em>池先生，你失宠了</a>
+			</dd>
+		</dl>
+		<!--最近搜索-->
+		<dl class="m-hotkey">
+			<dt>最近搜索<span class="clear"></span></dt>
+			<dd class="history">
+				<!--<a href="javascript:;">
+					池先生，你失宠了
+				</a>-->
+			</dd>
+		</dl>
+		<!--搜索列表-->
+		<!--<ul class="m-list-box clearfix">
+			<li class="clearfix">
+				<a href="javascript:;" class="clearfix">
+					<img src="../image/list1.png" alt="" />
+					<h3>大汉光武</h3>
+					<p>酒徒 | 历史传奇</p>
+					<p>8.2万人阅读 | 连载中</p>
+					<p class="box-last">少年刘秀与好朋友严光等人去长安求学，看到皇家车队出行，执金吾将军列于车队之前开路。忽然心生感慨，“仕宦当作执金吾，娶妻当得阴丽华。”</p>
+				</a>
+			</li>
+			<li class="clearfix">
+				<a href="javascript:;" class="clearfix">
+					<img src="../image/list1.png" alt="" />
+					<h3>大汉光武</h3>
+					<p>酒徒 | 历史传奇</p>
+					<p>8.2万人阅读 | 连载中</p>
+					<p class="box-last">少年刘秀与好朋友严光等人去长安求学，看到皇家车队出行，执金吾将军列于车队之前开路。忽然心生感慨，“仕宦当作执金吾，娶妻当得阴丽华。”</p>
+				</a>
+			</li>
+		</ul>-->
+	</section>
+	
+		<script src="../js/jquery-3.2.1.min.js"></script>
+		<script>
+			//初始化页面
+			var start = 0;//列表的起始加载位置
+			var his = [];//记录搜索历史
+			//渲染搜索历史列表
+			if(sessionStorage.getItem('hisSearch')){
+				var list = [];
+				list = sessionStorage.getItem('hisSearch').split(',');
+				var str = '';
+				list.forEach(function(a){
+					str +=  `<a href="javascript:;">${a}</a>`
+				})
+				$('.history').html(str);
+			}
+			$(document).ready(function(){
+				//hash改变，页面搜索渲染改变
+				var hash = location.hash;
+				if(hash.substring(0,2) == '#q'){
+					var str = hash.substr(3).split('&')[0]
+					$('#search-input-bottom').val(str);
+					search(str);
+				};
+				
+			})
+			window.onhashchange = function(){
+				//hash改变，页面搜索渲染改变
+				var hash = location.hash;
+				if(hash.substring(0,2) == '#q'){
+					var str = hash.substr(3).split('&')[0]
+					$('#search-input-bottom').val(str);
+					search(str);
+				};
+				//刷新页面
+				location = location;
+			}
+			
+			
+			//点击返回按钮
+			$('.back').click(function(){
+				history.back();
+			})
+			
+			//点击搜索按钮
+			$('.btn2').click(function(){
+				$('.search-tips').hide();
+				search();
+			})
+			//回车搜索
+			$('#search-input-bottom').keyup(function(ev){
+				if(ev.keyCode == '13'){
+					$('.search-tips').hide();
+					search();
+				}
+			})
+			function search(val){
+				var val = val?val:$.trim($('#search-input-bottom').val());
+				if(val == ''){
+					return;
+				}
+				//清空列表内容
+				$('.m-search-key').html('');
+				//获取数据，渲染列表
+				if(val != ''){
+					$.ajax({
+						type:"get",
+						url:"https://api.douban.com/v2/book/search?callback=?",
+						async:true,
+						dataType:'jsonp',
+						data:{
+							q:val,
+							start:0,
+					      count: 10
+						},
+						success:function(data){
+							//console.log(data);
+							if(data.books.length != 0){
+								var txt = '<ul class="m-list-box clearfix">';
+								$.each(data.books,function(i,n){
+									txt += `<li class="clearfix">
+													<a href="javascript:;" class="clearfix">
+														<img src=${n.image} alt="" />
+														<h3>${n.title}</h3>
+														<p>${n.author[0]}</p>
+														<p>8.2万人阅读 | 连载中</p>
+														<p class="box-last">${n.summary}</p>
+													</a>
+												</li>`;
+								});
+								txt += '</ul>';
+								$('.m-search-key').html(txt);
+								//设置hash
+								window.location.hash = `#q=${val}&type=detail`;
+								//更改输入框数据
+								$('#search-input-bottom').attr('placeholder','搜索你想要的书籍、作者')
+							}else{
+								//无搜索结果
+								$('.m-search-key').html('<div class="no-search"></div>');
+								location.hash = '#nosearch';
+							}
+							//添加搜索记录sessionStorage
+							if(sessionStorage.getItem('hisSearch')){
+								his = sessionStorage.getItem('hisSearch').split(',');
+								if(his.every(function(a,b){
+									return a != val;
+								})){
+									his.push(val);
+								}	
+							}else{
+								his.push(val);
+							}
+							sessionStorage.setItem('hisSearch',his);
+							//console.log(sessionStorage.getItem('hisSearch'))
+						}
+					});
+				}
+			}
+// 下拉刷新，上拉加载更多
+function refresh(refresh,loadmore) {
+  $(window).scroll(function(){
+    var scrollTop = $(this).scrollTop();    //滚动条距离顶部的高度
+    var scrollHeight = $(document).height();   //当前页面的总高度
+    var clientHeight = $(this).height();    //当前可视的页面高度
+    // console.log("top:"+scrollTop+",doc:"+scrollHeight+",client:"+clientHeight);
+    if(scrollTop + clientHeight >= scrollHeight){   
+    	//距离顶部+当前高度 >=文档总高度 即代表滑动到底部 count++;         //每次滑动count加1
+      // filterData(serviceTypeId,industryId,cityId,count); //调用筛选方法，count为当前分页数
+	   if(loadmore){
+	     loadmore();
+	   }
+    }else if(scrollTop<=0){
+      //滚动条距离顶部的高度小于等于0 TODO
+      //alert("下拉刷新，要在这调用啥方法？"); 
+      if(refresh){
+        refresh();
+      }
+    }
+  });
+}
+//调用上拉加载更多
+refresh(function(){},function(){
+	start += 10; 	
+	$.ajax({
+		type:"get",
+		url:"https://api.douban.com/v2/book/search?callback=?",
+		async:true,
+		dataType:'jsonp',
+		data:{
+			q:$('#search-input-bottom').val(),
+			start:start,
+	      count: 10
+		},
+		success:function(data){
+			if(data.books.length != 0){
+				var txt = '';
+				$.each(data.books,function(i,n){
+					txt += `<li class="clearfix">
+									<a href="javascript:;" class="clearfix">
+										<img src=${n.image} alt="" />
+										<h3>${n.title}</h3>
+										<p>${n.author[0]}</p>
+										<p>8.2万人阅读 | 连载中</p>
+										<p class="box-last">${n.summary}</p>
+									</a>
+								</li>`;
+				});
+				$('.m-list-box').append(txt);
+			}
+		}
+	});
+});
+
+//清楚搜索记录
+$('.clear').click(function(){
+	$('.history').html('');
+	sessionStorage.removeItem('hisSearch');
+})
+
+//点击 大家都在搜
+//点击最近搜索
+$('.search-p,.history').click(function(ev){
+	search($(ev.target).text());
+})
+
+//搜索时，出现搜索提示
+$('#search-input-bottom').on('input',function(){
+	if($('#search-input-bottom').val()!=''){
+		$.ajax({
+			type:"get",
+			url:"https://api.douban.com/v2/book/search?callback=?",
+			async:true,
+			dataType:'jsonp',
+			data:{
+				q:$('#search-input-bottom').val(),
+				start:start,
+		      count: 10
+			},
+			success:function(data){
+				if(data.books.length != 0){
+					$('.search-tips').show();
+					var txt = '';
+					$.each(data.books,function(i,n){
+						txt += `<li class="tips-f">${n.title}</li>`;
+					});
+					$('.search-tips').html(txt);
+				}
+			}
+		})
+	}else{
+		$('.search-tips').hide();
+	}
+})
+//点击每一个搜索提示
+$('.search-tips').click(function(ev){
+	$('#search-input-bottom').val($(ev.target).text());
+	$('.search-tips').hide();
+	search();
+})
+		</script>
+	</body>
+</html>

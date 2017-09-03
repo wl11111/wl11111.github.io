@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>网易云阅读-书籍详情</title>
+		<link rel="icon" href="../image/favicon.ico"  type="image/x-icon" />
+		<link rel="stylesheet" type="text/css" href="../css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/bookdev.css"/>
+		<script>
+			var iScale=1/window.devicePixelRatio;
+			document.write('<meta name="viewport" content="width=device-width,initial-scale='+iScale+',minimum-scale='+iScale+',maximum-scale='+iScale+',user-scalable=no"/>')
+			var iWidth=document.documentElement.clientWidth;
+			document.getElementsByTagName('html')[0].style.fontSize=iWidth/32+ 'px';
+		</script>
+	</head>
+	<body>
+		<header class="j-fixedbar clearfix">
+			<a class="back" href="../index.html"></a>
+			<p class="m-dev">
+				书籍详情
+			</p>
+			<a class="s-t1" href="search.html"></a>
+			<a class="home" href="../index.html">首页</a>
+		</header>
+		<!--书籍概要-->
+		<section class="booksrc">
+			<dl class="book-t clearfix">
+				<dt>
+					<img class="book-f6" src="" alt="" />
+				</dt>
+				<dd>
+					<h4 class="book-f1"></h4>
+					<span class="book-f2"></span>
+					<span class="book-f3"></span>
+					<span class="book-f4"></span>
+					<span class="book-f5"></span>
+				</dd>
+			</dl>
+			<div class="book-btn">
+				<a class="read-btn" href="javascript:;">立即阅读</a>
+				<a class="down-btn" href="javascript:;">下载整本</a>
+			</div>
+			<a class="addbook" href="javascript:;">放入书架</a>
+		</section>
+		<div class="new-p">
+			<p class="newdev">第一千三百九十八章 第三关</p>
+			<p>今天08:00更新</p>
+		</div>
+		<!--内容简介-->
+		<div class="book-dp clearfix">
+			<p class="bt-1">内容简介</p>
+			<p class="bt-2">
+				
+			</p>
+			<p class="open">展开</p>
+		</div>
+		<div class="dm-f">
+			<p class="dm-f1">
+				<span>目录</span>
+				<span>(共<i class="t-dev"></i>章)</span>
+				<a href="javascript:;" class="order">正序↓</a>
+			</p>
+			<ul class="dm-list">
+				<li>第一章 大神的实习传承人</li>
+				<li>第二章 出事了</li>
+				<li>第三章 做个不一样的农民</li>
+				<li>第四章 超级番茄王</li>
+			</ul>
+			<a class="more1" href="javascript:;">更多目录></a>
+		</div>
+		
+		<script src="../js/jquery-3.2.1.min.js"></script>
+		<script src="../js/bookdata.js"></script>
+		<script>
+			
+			//点击展开
+			$('.open').click(function(){
+				$('.open').hide();
+				$('.bt-2 span').hide();
+				$('.bt-2').removeAttr('style');
+			})
+			//初始化书本信息
+			var hash = location.hash;
+			var id = hash.substring(1).split('/')[0];
+			var bookName = hash.substring(1).split('/')[1];//书名
+			if(id != ''){
+				$.ajax({
+					type:"get",
+					url:"https://api.douban.com/v2/book/"+id,
+					async:true,
+					dataType:'jsonp',
+					success:function(data){
+						//console.log(data)
+						$('.book-f1').html(data.title);
+						$('.book-f2').html('作者:'+data.author[0]);
+						$('.book-f3').html('分类：历史传奇 | 连载中');
+						$('.book-f4').html('字数：120.8万');
+						$('.book-f5').html('点击：100.4万');
+						$('.book-f6').attr('src',data.image);
+						$('.bt-2').html(data.summary+'<span class="bt2-dev2">...</span>');
+						//初始化展开按钮样式
+						if($('.bt-2').height()/parseInt($('.bt-2').css('line-height'))<=3){
+							$('.open').hide();
+							$('.bt-2 span').hide();
+						}else{
+							$('.bt-2').css({
+								'height':parseInt($('.bt-2').css('line-height'))*3.5							    
+							})
+						}
+					}
+				})
+			}
+			//点击立即阅读
+			$('.read-btn').click(function(){
+				//console.log(sessionStorage.getItem('lastread'))
+				if(id == 27063221 || id == 2974188 || id == 4889767){
+					//设置本地存储，记录最近阅读书籍
+					sessionStorage.setItem('lastread',bookName);
+					window.location.href = 'read.html#read'+'/'+id;//跳转到阅读页
+				}
+			})
+			
+			
+			//数据
+			var arr = [
+			{
+				id:27063221,
+				title:'古剑屠魔录',
+				author:'月关',
+				txt:txt1
+			},
+			{
+				id:2974188,
+				title:'回到明朝当王爷',
+				author:'月关',
+				txt:txt2
+			},
+			{
+				id:4889767,
+				title:'步步生莲',
+				author:'月关',
+				txt:txt3
+			}
+			];
+			//根据hash获取当前txt
+			var hash = location.hash;
+			var id2 = hash.substring(1).split('/')[0];
+			var txt = '';//当前txt数据
+			$.each(arr, function(i,a) {
+				if(a.id == id2){
+					txt = a.txt;
+				}
+			});
+			//按换行拆放到数组里，去除空项
+			var arr2 = txt.split('\n');//所需数组
+			$.each(arr2, function(i,a) {
+				if(a == ''){
+					arr2.splice(i,1);
+				}
+			});
+			//去除空格，向每一项里添加标签
+			var str = '';
+			$.each(arr2, function(i,a) {
+				if(($.trim(a).substr(0,1)=='第' || $.trim(a).substr(0,1) == '章')&&$.trim(a).length<25){
+					str += '#<h4>'+$.trim(a)+'</h4>'
+				}else{
+					str += '<p>'+$.trim(a)+'</p>'
+				}
+			});
+			//拆为每一章，放到数组里
+			var arr3 = str.split('#');
+			$.each(arr3, function(i,a) {
+				if(a == ''){
+					arr3.splice(i,1);
+				}
+			});
+			//获取章节名
+			var nameArr = [];//目录
+			$.each(arr3, function(i,a) {
+				nameArr.push(a.split('</h4>')[0].substring(4));
+			});
+			var ct2 = nameArr.length;
+			$('.t-dev').html(ct2);
+			//渲染目录
+			function tab(nameArr){
+				var str = '';
+				$('.dm-list').html('');
+				$.each(nameArr, function(i,a) {
+					if(i<4){
+						str += `<li>${a}</li>`
+					}
+					
+				});
+				$('.dm-list').html(str);
+			}
+			if(id == 27063221 || id == 2974188 || id == 4889767){
+				tab(nameArr);
+			}
+			
+			
+			//渲染最新章节
+			$('.newdev').html(nameArr[ct2-1]);
+			//点击最新章节
+			$('.newdev').click(function(){
+				if(id == 27063221 || id == 2974188 || id == 4889767){
+					window.location.href = 'read.html#read'+'/'+id+'/'+(ct2-1);
+				}
+			})
+			
+			var ordOff = true;//控制正序，倒序
+			//点击每一章
+			$('.dm-list').click(function(ev){
+				if(id == 27063221 || id == 2974188 || id == 4889767){
+					if(ordOff){
+						window.location.href = 'read.html#read'+'/'+id+'/'+$(ev.target).index();
+					}else{
+						window.location.href = 'read.html#read'+'/'+id+'/'+(ct2-$(ev.target).index()-1);
+					}
+				}
+			})
+			//点击正序,倒序
+			$('.order').click(function(){
+				if(id == 27063221 || id == 2974188 || id == 4889767){
+					var tName = nameArr.slice();
+					if(ordOff){
+						$('.order').html('倒序↑');
+						var narr = tName.reverse();
+						tab(narr);
+						ordOff = false;
+					}else{
+						$('.order').html('正序↓');
+						tab(nameArr);
+						ordOff = true;
+					}
+				}
+			})
+			
+			//点击下载整本
+			$('.down-btn').click(function(){
+				if(id == 27063221){
+					$('.down-btn').attr({
+						'href':'../txt/古剑屠魔录.txt',
+						'download':'古剑屠魔录.txt'
+					})
+				}else if(id == 2974188){
+					$('.down-btn').attr({
+						'href':'../txt/回到明朝当王爷.txt',
+						'download':'回到明朝当王爷.txt'
+					})
+				}else if(id == 4889767){
+					$('.down-btn').attr({
+						'href':'../txt/步步生莲.txt',
+						'download':'步步生莲.txt'
+					})
+				}
+			})
+		</script>
+	</body>
+</html>

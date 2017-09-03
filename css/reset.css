@@ -1,0 +1,53 @@
+body{
+	background:#fff;
+}
+.center{
+	margin:0 auto;
+}
+body,h1,h2,h3,h4,h5,h6,dl,dd,p{
+	margin:0;
+	font:12px "宋体"
+}
+ul,ol{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+a{
+	color:black;
+	text-decoration:none;
+}
+h1,h2,h3,h4,h5,h6,strong,b{
+	font-weight:normal;
+}
+em,i{
+	font-style:normal;
+}
+img{
+	border:none;
+	vertical-align:top;
+}
+input,textarea,select,option,fieldset{
+	border:0;
+	padding:0;
+	background:none;
+	margin:0;
+	vertical-align:top;
+	outline:none;/*删掉点击时的轮廓线*/
+}
+textarea{
+	resize:none;
+}
+/*------------------------清除浮动、塌陷------------------------*/
+.clearfix:after{
+	content:"";
+	display:block;
+	clear:both;
+	height:0;
+	overflow:hidden;
+	visibility:hidden;
+}
+			/*-----兼容IE7、IE6及以下浏览器、触发BFC-----------*/
+.clearfix{
+	zoom:1;
+}

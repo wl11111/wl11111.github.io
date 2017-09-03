@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="icon" href="../image/favicon.ico"  type="image/x-icon" />
+		<link rel="stylesheet" type="text/css" href="../css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/read.css"/>
+		<script>
+			var iScale=1/window.devicePixelRatio;
+			document.write('<meta name="viewport" content="width=device-width,initial-scale='+iScale+',minimum-scale='+iScale+',maximum-scale='+iScale+',user-scalable=no"/>')
+			var iWidth=document.documentElement.clientWidth;
+			document.getElementsByTagName('html')[0].style.fontSize=iWidth/32+ 'px';
+		</script>
+	</head>
+	<body>
+		<!--目录-->
+		<div class="menu-dev">
+			<div class="head">
+				<p class="head-p1">
+					<span>共<i></i>章</span>
+					<a href="javascript:;">倒序↓</a>
+				</p>
+				<p class="head-p2 clearfix">
+					<a href="javascript:;">上100章</a>
+					<a href="javascript:;">下100章</a>
+				</p>
+			</div>
+			<ul class="menu-list">
+				<!--<li>第一章</li>-->
+			</ul>
+		</div>
+		<!--内容-->
+		<div class="read-b">
+			
+		</div>
+		<!--半遮罩-->
+		<div class="wrap-b"></div>
+		<!--顶部菜单-->
+		<div class="menu-top">
+			<a class="back-t" href="javascript:;"><</a>
+			<a class="home-t" href="../index.html">首页</a>
+		</div>
+		<!--底部菜单-->
+		<div class="menu-bottom">
+			<a class="menu-r" href="javascript:;"></a>
+			<a class="font-r" href="javascript:;"></a>
+			<a class="day-r" href="javascript:;"></a>
+			<a class="down-r" href="javascript:;"></a>
+		</div>
+		
+		<script src="../js/jquery-3.2.1.min.js"></script>
+		<script src="../js/bookdata.js"></script>
+		<script src="../js/move.js"></script>
+		<script>
+			//小说内容数据
+			var arr = [
+			{
+				id:27063221,
+				title:'古剑屠魔录',
+				author:'月关',
+				txt:txt1
+			},
+			{
+				id:2974188,
+				title:'回到明朝当王爷',
+				author:'月关',
+				txt:txt2
+			},
+			{
+				id:4889767,
+				title:'步步生莲',
+				author:'月关',
+				txt:txt3
+			}
+			];
+			
+			//阅读时，点击屏幕中间，出现菜单
+			$('.read-b').click(function(ev){
+				if(ev.clientY>350&&ev.clientY<750){
+					$('.menu-top,.menu-bottom').toggle();
+				}
+				
+			})
+			//点击返回按钮
+			$('.back-t').click(function(){
+				history.back();
+			})
+			
+			//根据hash获取当前txt
+			var hash = location.hash;
+			var id2 = hash.split('/')[1];
+			var txt = '';//当前txt数据
+			$.each(arr, function(i,a) {
+				if(a.id == id2){
+					txt = a.txt;
+					$('title').html('网易云阅读-'+a.title);
+				}
+			});
+			//按换行拆放到数组里，去除空项
+			var arr2 = txt.split('\n');//所需数组
+			$.each(arr2, function(i,a) {
+				if(a == ''){
+					arr2.splice(i,1);
+				}
+			});
+			//去除空格，向每一项里添加标签
+			var str = '';
+			$.each(arr2, function(i,a) {
+				if(($.trim(a).substr(0,1)=='第' || $.trim(a).substr(0,1) == '章')&&$.trim(a).length<25){
+					str += '#<h4>'+$.trim(a)+'</h4>'
+				}else{
+					str += '<p>'+$.trim(a)+'</p>'
+				}
+			});
+			//拆为每一章，放到数组里
+			var arr3 = str.split('#');
+			$.each(arr3, function(i,a) {
+				if(a == ''){
+					arr3.splice(i,1);
+				}
+			});
+			//渲染每一章
+			var count = hash.split('/')[2]?hash.split('/')[2]:0;
+			function show(count){
+				$('.read-b').html(arr3[count]);
+			}
+			show(count);
+			//下拉,上拉
+			refresh(function(){
+				count--;
+				if(count<0){
+					return count=0;
+				}
+				show(count);
+			},function(){
+				count++;
+				if(count>arr3.length-1){
+					return count=arr3.length-1;
+				}
+				show(count);
+				$(window).scrollTop(5);
+			})
+			// 下拉加载上一章，上拉加载更多
+			function refresh(refresh,loadmore) {
+			  $(window).scroll(function(){
+			    var scrollTop = $(this).scrollTop();    //滚动条距离顶部的高度
+			    var scrollHeight = $(document).height();   //当前页面的总高度
+			    var clientHeight = $(this).height();    //当前可视的页面高度
+			    // console.log("top:"+scrollTop+",doc:"+scrollHeight+",client:"+clientHeight);
+			    if(scrollTop + clientHeight >= scrollHeight){   
+			    	//距离顶部+当前高度 >=文档总高度 即代表滑动到底部 count++;         //每次滑动count加1
+			      // filterData(serviceTypeId,industryId,cityId,count); //调用筛选方法，count为当前分页数
+				   if(loadmore){
+				     loadmore();
+				   }
+			    }else if(scrollTop<=0){
+			      //滚动条距离顶部的高度小于等于0 TODO
+			      //alert("下拉刷新，要在这调用啥方法？"); 
+			      if(refresh){
+			        refresh();
+			      }
+			    }
+			  });
+			}
+			//点击 目录 按钮，出现目录
+			
+			var obj1 = document.getElementsByClassName('menu-dev')[0];
+			var obj2 = document.getElementsByClassName('read-b')[0];
+			var w = parseFloat(getComputedStyle(obj1).width);
+			$('.menu-r').click(function(){
+				fn1();
+			})
+			function fn1(){
+				$('.menu-top,.menu-bottom').hide();
+				move(obj1,{left:0},300,'easeOut');
+				move(obj2,{left:w},300,'easeOut',function(){
+					$('.wrap-b').show();
+					$('.wrap-b').click(function(){
+						$('.wrap-b').hide();
+						move(obj1,{left:-w},300,'easeOut');
+						move(obj2,{left:0},300,'easeOut');
+					})
+				});
+			}
+			//点击字体
+			var onOff = true;
+			$('.font-r').click(function(){
+				if(onOff){
+					$('.read-b h4').css({
+						'font-size':'2.5rem'
+					})
+					$('.read-b p').css({
+						'font-size':'1.8rem'
+					})
+					onOff = false;
+				}else{
+					$('.read-b h4').css({
+						'font-size':'2.08rem'
+					})
+					$('.read-b p').css({
+						'font-size':'1.44rem'
+					})
+					onOff = true;
+				}
+			})
+			//点击 白天 按钮
+			var dayOff = true;
+			$('.day-r').click(function(){
+				if(dayOff){
+					$('.day-r').css({
+						'background-image':'url(../image/dd33.png)'
+					})
+					$('.read-b,.read-b p').css({
+						'background':'#313131',
+						'color':'#d9d5d5'
+					})
+					dayOff = false;
+				}else{
+					$('.day-r').css({
+						'background-image':'url(../image/dd3.png)'
+					})
+					$('.read-b,.read-b p').css({
+						'background':'#f0ebe4',
+						'color':'#222222'
+					})
+					dayOff = true;
+				}
+			})
+			//获取章节名
+			var nameArr = [];
+			$.each(arr3, function(i,a) {
+				nameArr.push(a.split('</h4>')[0].substring(4));
+			});
+			var ct = nameArr.length;
+			//向渲染目录
+			$('.head-p1 i').html(ct);
+			var str = '';
+			$.each(nameArr, function(i,a) {
+				str += `<li>${a}</li>`
+			});
+			$('.menu-list').html(str);
+			//点击每一章
+			$('.menu-list').click(function(ev){
+				show($(ev.target).index());
+				$(window).scrollTop(5);
+			})
+			//手指右划，出现目录
+			$("body").on("touchstart", function(event) {
+				var X;
+				 //event.preventDefault();
+				 startX = event.targetTouches[0].pageX;
+				$("body").on("touchmove", function(event){
+					//event.preventDefault();
+					moveEndX =  event.targetTouches[0].pageX;
+					X = moveEndX - startX;
+				});
+				$("body").on("touchend", function(event) {
+					//event.preventDefault();
+					if(  X > 200 ){
+					  fn1();
+					}
+					else if( X < -200  ){
+						$('.wrap-b').hide();
+						move(obj1,{left:-w},300,'easeOut');
+						move(obj2,{left:0},300,'easeOut');
+					}
+				})
+			});
+		</script>
+	</body>
+</html>

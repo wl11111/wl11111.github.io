@@ -1,0 +1,148 @@
+body {
+  background: #f0ebe4;
+  width: 100%;
+  overflow-x: hidden;
+}
+a:active {
+  -webkit-tap-highlight-color: transparent;
+}
+.read-b {
+  padding: 1.04rem 0.64rem 0 1.12rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30.24rem;
+}
+.read-b p {
+  background: #f0ebe4;
+  font-size: 1.44rem;
+  color: #222222;
+  line-height: 2.56rem;
+  text-indent: 2em;
+  margin-bottom: 1.2rem;
+}
+.read-b h4 {
+  font-size: 2.08rem;
+  color: #993333;
+  margin-bottom: 0.4rem;
+  font-weight: bold;
+}
+.menu-top {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3.84rem;
+  background: #5c5c5c;
+}
+.menu-top a {
+  color: #fff;
+  font-size: 1.6rem;
+  height: 2.4rem;
+  text-align: center;
+  line-height: 2.4rem;
+  margin-top: 0.8rem;
+}
+.back-t {
+  float: left;
+  width: 2.4rem;
+  margin-left: 0.8rem;
+}
+.home-t {
+  float: right;
+  margin-right: 0.8rem;
+}
+.menu-bottom {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3.84rem;
+  background: #5c5c5c;
+}
+.menu-bottom a {
+  float: left;
+  width: 2.24rem;
+  height: 2.8rem;
+  background-size: 2.24rem 2.8rem;
+}
+.menu-r {
+  background: url(../image/dd1.png) no-repeat left top;
+  margin: 0.64rem 5.76rem 0 3.04rem;
+}
+.font-r {
+  background: url(../image/dd2.png) no-repeat left top;
+  margin: 0.64rem 5.76rem 0 0;
+}
+.day-r {
+  background: url(../image/dd3.png) no-repeat left top;
+  margin: 0.64rem 5.76rem 0 0;
+}
+.down-r {
+  background: url(../image/dd4.png) no-repeat left top;
+  margin: 0.64rem 0 0 0;
+}
+.menu-dev {
+  box-sizing: border-box;
+  padding: 0 1.2rem;
+  width: 24rem;
+  height: 45.52rem;
+  background: #fbf7f3;
+  position: fixed;
+  left: -24rem;
+  top: 0;
+  overflow-y: auto;
+}
+.wrap-b {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 8rem;
+  height: 100%;
+  background: transparent;
+  display: none;
+}
+.head {
+  height: 6.08rem;
+  border-bottom: 0.08rem solid #d1cfcd;
+  padding-top: 0.8rem;
+}
+.head-p1 {
+  height: 2.24rem;
+  font-size: 0.96rem;
+  color: #aba499;
+}
+.head-p1 a {
+  color: #e9b290;
+  margin-left: 13.92rem;
+}
+.head-p2 a {
+  float: left;
+  width: 9.84rem;
+  height: 2.64rem;
+  border-radius: 0.24rem;
+  font-size: 1.12rem;
+  line-height: 2.64rem;
+  text-align: center;
+}
+.head-p2 a:nth-child(1) {
+  background: #ebe8e6;
+  color: #fbf7f3;
+  margin-right: 1.04rem;
+}
+.head-p2 a:nth-child(2) {
+  background: #fff;
+  color: #999;
+  box-sizing: border-box;
+  border: 0.08rem solid #d1ccc7;
+}
+.menu-list li {
+  height: 3.6rem;
+  border-bottom: 0.08rem dotted #aeaeae;
+  font-size: 1.12rem;
+  color: #566166;
+  padding-left: 2.24rem;
+  line-height: 3.6rem;
+}
