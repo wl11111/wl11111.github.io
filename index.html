@@ -247,10 +247,6 @@
 		<script src="js/jquery-3.2.1.min.js"></script>
 		<script src="js/index.js"></script>
 		<script>
-			//窗口大小改变。刷新页面
-			$(window).resize(function(){
-				location.reload();
-			})
 			//最近阅读书籍
 			if(sessionStorage.getItem('lastread')){
 				$('.content-1-txt').html(sessionStorage.getItem('lastread'))
