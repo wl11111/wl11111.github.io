@@ -249,7 +249,7 @@
 		<script>
 			//窗口大小改变。刷新页面
 			$(window).resize(function(){
-				location = location;
+				location.reload();
 			})
 			//最近阅读书籍
 			if(sessionStorage.getItem('lastread')){
